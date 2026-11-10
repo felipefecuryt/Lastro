@@ -37,7 +37,8 @@ npm run build   # build de produção
 | `src/lib/guias.ts` | Conteúdo dos guias, com fontes |
 | `src/app/diagnostico/` | Assistente de 4 passos (estado na URL → resultado compartilhável) |
 | `src/app/api/lead/route.ts` | Lista de espera — fase 0 só loga; TODO dentro do arquivo |
-| `src/app/globals.css` | Tokens de design (cores, fontes) |
+| `src/app/globals.css` | Tokens de design e toda a animação das cenas |
+| `src/components/cena-*.tsx` | As duas cenas da home |
 
 ## Decisões que não são óbvias
 
@@ -48,8 +49,36 @@ npm run build   # build de produção
 - **Suspensão do STF é configuração**: `SUSPENSAO_STF_ATIVA` em
   `src/lib/rules/diagnostico.ts`. Quando a conciliação da ADPF 1316 terminar,
   atualize ali e o site inteiro acompanha.
-- **Fontes em runtime**: as fontes do Google carregam via `<link>` com fallback
-  de sistema, para o build não depender de rede.
+- **Fonte hospedada no próprio site**: Archivo variável via `@fontsource-variable`.
+  Nenhuma requisição a terceiros para carregar fonte.
+
+## Design: "a linha de carga"
+
+Lastro é o peso no fundo do casco que mantém o navio em pé. Todo navio tem no
+costado a marca de carga (disco de Plimsoll), obrigatória por lei desde 1876
+porque navio sobrecarregado matava tripulação. A NR-1 psicossocial é isso para
+o trabalho — e o site inteiro sai dessa imagem.
+
+| Token | Cor | Uso |
+| --- | --- | --- |
+| `casco` | `#0f2439` | texto e faixas escuras |
+| `mar` | `#1e7f72` | água e ação principal (os "verdes mares" do Ceará) |
+| `tinta` | `#f5f8f7` | fundo |
+| `zarcao` | `#bf3b2b` | **só** o que está abaixo da linha: risco e erro |
+| `nevoa` | `#c9d6d4` | linhas e bordas |
+
+- **Uma família só** (Archivo): o eixo de largura faz o display. Títulos
+  condensados, como letra pintada em costado.
+- **Duas cenas guiadas por rolagem**, espelhadas: em `cena-carga.tsx` a carga
+  embarca, o casco afunda e o título comprime; em `cena-prova.tsx` a água desce
+  enquanto passam medir, agir e provar.
+- **Como funciona**: `use-scroll-progress.ts` escreve a variável CSS `--p`
+  (0 a 1) na seção; toda a animação é `calc()` em `globals.css`. Sem biblioteca
+  de animação e sem re-render do React.
+- **Movimento reduzido**: com `prefers-reduced-motion`, as cenas viram texto em
+  fluxo normal com a figura parada.
+- As letras N e R ao lado do disco imitam as iniciais da certificadora nos
+  navios — aqui, norma regulamentadora.
 
 ## Próximos passos (fase 0 → 1)
 
